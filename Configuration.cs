@@ -1,7 +1,31 @@
-﻿namespace MathQuiz
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
+using MathQuiz.Models;
+using Rocket.API;
+
+namespace MathQuiz
 {
-    public class Configuration
+    public class Configuration : IRocketPluginConfiguration
     {
-        
+        public bool Enabled;
+        public string AnnouncerImageUrl, MessageColor, UnfavorableMessageColor;
+        public float IntervalInSeconds;
+        [XmlArray("Quizzes"), XmlArrayItem("Quiz")]
+        public List<Quiz> Quizzes;
+        public void LoadDefaults()
+        {
+            Enabled = true;
+            AnnouncerImageUrl = "https://i.pinimg.com/originals/8e/80/2a/8e802a0b020d2a38f427ac80a70d23b0.png";
+            IntervalInSeconds = 300;
+            MessageColor = "yellow";
+            UnfavorableMessageColor = "red";
+            Quizzes = new List<Quiz>
+            {
+                new Quiz(EQuizType.Addition, 1, 1000, 25, ERewardType.Experience, 100),
+                new Quiz(EQuizType.Subtraction, 1, 1000, 25, ERewardType.Experience, 100),
+                new Quiz(EQuizType.Multiplication, 1, 10, 25, ERewardType.Experience, 100),
+                new Quiz(EQuizType.Division, 1, 10, 25, ERewardType.Experience, 100),
+            };
+        }
     }
 }

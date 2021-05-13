@@ -1,21 +1,28 @@
-﻿namespace MathQuiz.Models
+﻿using System.Xml.Serialization;
+
+namespace MathQuiz.Models
 {
-    public class MathQuiz
+    public class Quiz
     {
+        [XmlAttribute("Type")]
         public EQuizType Type;
+        [XmlAttribute("MinNumber")]
         public int MinNumber;
+        [XmlAttribute("MaxNumber")]
         public int MaxNumber;
-        public uint AnswerTime;
+        [XmlAttribute("Chance")]
         public byte Chance;
+        [XmlAttribute("RewardType")]
         public ERewardType RewardType;
+        [XmlAttribute("RewardAmount")]
         public uint RewardAmount;
 
-        public MathQuiz(EQuizType type, int minNumber, int maxNumber, uint answerTime, byte chance, ERewardType rewardType, uint rewardAmount)
+        public Quiz(){}
+        public Quiz(EQuizType type, int minNumber, int maxNumber, byte chance, ERewardType rewardType, uint rewardAmount)
         {
             Type = type;
             MinNumber = minNumber;
             MaxNumber = maxNumber;
-            AnswerTime = answerTime;
             Chance = chance;
             RewardType = rewardType;
             RewardAmount = rewardAmount;

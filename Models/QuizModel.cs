@@ -1,8 +1,8 @@
 ﻿using System.Xml.Serialization;
 
-namespace MathQuiz.Models
+namespace RFMathQuiz.Models
 {
-    public class Quiz
+    public class QuizModel
     {
         [XmlAttribute("Type")]
         public EQuizType Type;
@@ -17,8 +17,8 @@ namespace MathQuiz.Models
         [XmlAttribute("RewardAmount")]
         public uint RewardAmount;
 
-        public Quiz(){}
-        public Quiz(EQuizType type, int minNumber, int maxNumber, byte chance, ERewardType rewardType, uint rewardAmount)
+        public QuizModel(){}
+        public QuizModel(EQuizType type, int minNumber, int maxNumber, byte chance, ERewardType rewardType, uint rewardAmount)
         {
             Type = type;
             MinNumber = minNumber;

@@ -7,8 +7,8 @@
         <ProjectGuid>{21353E70-9CFC-4E00-B9DF-CC9D3920AF4F}</ProjectGuid>
         <OutputType>Library</OutputType>
         <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>MathQuiz</RootNamespace>
-        <AssemblyName>MathQuiz</AssemblyName>
+        <RootNamespace>RFMathQuiz</RootNamespace>
+        <AssemblyName>RFMathQuiz</AssemblyName>
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
     </PropertyGroup>
@@ -67,8 +67,8 @@
     <ItemGroup>
         <Compile Include="Commands\AnswerCommand.cs" />
         <Compile Include="Configuration.cs" />
-        <Compile Include="Main.cs" />
-        <Compile Include="Models\Quiz.cs" />
+        <Compile Include="Plugin.cs" />
+        <Compile Include="Models\QuizModel.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

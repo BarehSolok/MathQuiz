@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathQuiz", "MathQuiz.csproj", "{21353E70-9CFC-4E00-B9DF-CC9D3920AF4F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RFMathQuiz", "RFMathQuiz.csproj", "{21353E70-9CFC-4E00-B9DF-CC9D3920AF4F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

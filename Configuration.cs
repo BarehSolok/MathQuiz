@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
-using MathQuiz.Models;
+using RFMathQuiz.Models;
 using Rocket.API;
 
-namespace MathQuiz
+namespace RFMathQuiz
 {
     public class Configuration : IRocketPluginConfiguration
     {
         public bool Enabled;
         public string AnnouncerImageUrl, MessageColor, UnfavorableMessageColor;
         public float IntervalInSeconds;
-        [XmlArray("Quizzes"), XmlArrayItem("Quiz")]
-        public List<Quiz> Quizzes;
+        [XmlArrayItem("Quiz")]
+        public List<QuizModel> Quizzes;
         public void LoadDefaults()
         {
             Enabled = true;
@@ -19,12 +19,12 @@ namespace MathQuiz
             IntervalInSeconds = 300;
             MessageColor = "yellow";
             UnfavorableMessageColor = "red";
-            Quizzes = new List<Quiz>
+            Quizzes = new List<QuizModel>
             {
-                new Quiz(EQuizType.Addition, 1, 1000, 25, ERewardType.Experience, 100),
-                new Quiz(EQuizType.Subtraction, 1, 1000, 25, ERewardType.Experience, 100),
-                new Quiz(EQuizType.Multiplication, 1, 10, 25, ERewardType.Experience, 100),
-                new Quiz(EQuizType.Division, 1, 10, 25, ERewardType.Experience, 100),
+                new QuizModel(EQuizType.Addition, 1, 1000, 25, ERewardType.Experience, 100),
+                new QuizModel(EQuizType.Subtraction, 1, 1000, 25, ERewardType.Experience, 100),
+                new QuizModel(EQuizType.Multiplication, 1, 10, 25, ERewardType.Experience, 100),
+                new QuizModel(EQuizType.Division, 1, 10, 25, ERewardType.Experience, 100),
             };
         }
     }

@@ -5,18 +5,18 @@ using fr34kyn01535.Uconomy;
 using Rocket.API;
 using Rocket.API.Collections;
 using Rocket.Core.Plugins;
-using MathQuiz.Models;
+using RFMathQuiz.Models;
 using SDG.Unturned;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Logger = Rocket.Core.Logging.Logger;
 
-namespace MathQuiz
+namespace RFMathQuiz
 {
-    public class Main : RocketPlugin<Configuration>
+    public class Plugin : RocketPlugin<Configuration>
     {
         private static Coroutine _quizCor;
-        internal static Main Inst;
+        internal static Plugin Inst;
         internal static Configuration Conf;
         internal static bool NoQuestion;
         
@@ -25,19 +25,19 @@ namespace MathQuiz
             Inst = this;
             Conf = Configuration.Instance;
             
-            Logger.LogWarning("[MathQuiz] Plugin loaded successfully!");
             if (Configuration.Instance.Enabled)
             {
                 _quizCor = StartCoroutine(AutoRepeat());
                 
-                Logger.LogWarning("[MathQuiz] MathQuiz v1.0.0");
-                Logger.LogWarning("[MathQuiz] Author: BarehSolok#2548");
-                Logger.LogWarning("[MathQuiz] Enjoy the plugin! ;)");
+				Logger.LogWarning("[RFMathQuiz] Plugin loaded successfully!");
+                Logger.LogWarning("[RFMathQuiz] RFMathQuiz v1.0.0");
+                Logger.LogWarning("[RFMathQuiz] Made with 'rice' by RiceField Plugins!");
             }
             else
             {
-                Logger.LogError("[MathQuiz] MathQuiz: DISABLED. Check configuration files!");
-                Logger.LogError("[MathQuiz] Unloading plugin...");
+				Logger.LogWarning("[RFMathQuiz] Plugin loaded successfully!");
+                Logger.LogError("[RFMathQuiz] RFMathQuiz: DISABLED. Check configuration files!");
+                Logger.LogError("[RFMathQuiz] Unloading plugin...");
                 
                 Unload();
             }
@@ -52,18 +52,18 @@ namespace MathQuiz
                 _quizCor = null;
             }
             
-            Logger.LogWarning("[MathQuiz] Plugin unloaded successfully!");
+            Logger.LogWarning("[RFMathQuiz] Plugin unloaded successfully!");
         }
         public override TranslationList DefaultTranslations =>
             new TranslationList()
             {
-                {"mathquiz_broadcast_question", "[MathQuiz] '{0} {2} {1} = ?' Know the question and earn {3} {4} '/re <answer>'"},
-                {"mathquiz_broadcast_winner", "[MathQuiz] {0} answered the question correctly and earned {2} {3}! Answer: {1}"},
-                {"mathquiz_true_answer", "[MathQuiz] Congratulations! You have earned {0} {1} by answering correctly! Your new balance: {2} {1}"},
-                {"mathquiz_wrong_answer", "[MathQuiz] Wrong answer!"},
-                {"mathquiz_invalid_parameter", "[MathQuiz] Usage: '/re <answer>' or '/answer <answer>'"},
-                {"mathquiz_no_question", "[MathQuiz] No active questions yet!"},
-                {"mathquiz_disabled", "[MathQuiz] Disabled!"}
+                {"mathquiz_broadcast_question", "[RFMathQuiz] '{0} {2} {1} = ?' Know the question and earn {3} {4} '/re <answer>'"},
+                {"mathquiz_broadcast_winner", "[RFMathQuiz] {0} answered the question correctly and earned {2} {3}! Answer: {1}"},
+                {"mathquiz_true_answer", "[RFMathQuiz] Congratulations! You have earned {0} {1} by answering correctly! Your new balance: {2} {1}"},
+                {"mathquiz_wrong_answer", "[RFMathQuiz] Wrong answer!"},
+                {"mathquiz_invalid_parameter", "[RFMathQuiz] Usage: '/re <answer>' or '/answer <answer>'"},
+                {"mathquiz_no_question", "[RFMathQuiz] No active questions yet!"},
+                {"mathquiz_disabled", "[RFMathQuiz] Disabled!"}
             };
 
         private IEnumerator<WaitForSeconds> AutoRepeat()
@@ -75,7 +75,7 @@ namespace MathQuiz
             }
         }
         
-        internal Quiz CurrentQuiz;
+        internal QuizModel CurrentQuizModel;
         internal static int Number1, Number2, Result;
         internal static string Symbol;
         private void AutoQuiz()
@@ -87,33 +87,33 @@ namespace MathQuiz
                     return;
                 var quizzes = Conf.Quizzes.ToList();
 
-                RandomizeQuiz(out CurrentQuiz, out Symbol, ref Number1, ref Number2, ref Result);
+                RandomizeQuiz(out CurrentQuizModel, out Symbol, ref Number1, ref Number2, ref Result);
 
-                if (CurrentQuiz.RewardType == ERewardType.Uconomy)
+                if (CurrentQuizModel.RewardType == ERewardType.Uconomy)
                 {
                     ExecuteDependencyCode("Uconomy", plugin =>
                     {
                         var uconomy = (Uconomy)plugin;
-                        var broadcast = Translate("mathquiz_broadcast_question", Number1.ToString(), Number2.ToString(), Symbol, CurrentQuiz.RewardAmount.ToString(), uconomy.Configuration.Instance.MoneyName);
+                        var broadcast = Translate("mathquiz_broadcast_question", Number1.ToString(), Number2.ToString(), Symbol, CurrentQuizModel.RewardAmount.ToString(), uconomy.Configuration.Instance.MoneyName);
                         ChatManager.serverSendMessage(broadcast, Color.yellow, null, null, EChatMode.GLOBAL, Conf.AnnouncerImageUrl, true);
                     });
                 }
                 else
                 {
-                    var broadcast = Translate("mathquiz_broadcast_question", Number1.ToString(), Number2.ToString(), Symbol, CurrentQuiz.RewardAmount.ToString(), "Experience");
+                    var broadcast = Translate("mathquiz_broadcast_question", Number1.ToString(), Number2.ToString(), Symbol, CurrentQuizModel.RewardAmount.ToString(), "Experience");
                     ChatManager.serverSendMessage(broadcast, Color.yellow, null, null, EChatMode.GLOBAL, Conf.AnnouncerImageUrl, true);
                 }
                 NoQuestion = false;
             }
             catch (Exception ex)
             {
-                Logger.LogError("[MathQuiz] Error: " + ex);
+                Logger.LogError("[RFMathQuiz] Error: " + ex);
             }
         }
-        private void RandomizeQuiz(out Quiz selectedQuiz, out string symbol, ref int number1, ref int number2,
+        private void RandomizeQuiz(out QuizModel selectedQuizModel, out string symbol, ref int number1, ref int number2,
             ref int result)
         {
-            selectedQuiz = null;
+            selectedQuizModel = null;
             var totalChance = Conf.Quizzes.Sum(q => q.Chance);
             //var totalChance = Conf.Quizzes.Aggregate(0, (current, quiz) => current + quiz.Chance);
             symbol = "";
@@ -124,22 +124,22 @@ namespace MathQuiz
             {
                 if (diceRoll > i && diceRoll <= i + quiz.Chance)
                 {
-                    selectedQuiz = quiz;
+                    selectedQuizModel = quiz;
                     break;
                 }
                 i += quiz.Chance;
             }
 
-            if (selectedQuiz == null)
+            if (selectedQuizModel == null)
             {
-                Logger.LogWarning("[MathQuiz] Warning: Please setup MathQuiz configuration files first!");
+                Logger.LogWarning("[RFMathQuiz] Warning: Please setup RFMathQuiz configuration files first!");
                 Unload();
                 return;
             }
             
-            number1 = random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber);
-            number2 = random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber);
-            switch (selectedQuiz.Type)
+            number1 = random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber);
+            number2 = random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber);
+            switch (selectedQuizModel.Type)
             {
                 case EQuizType.Addition:
                     symbol = "+";
@@ -155,13 +155,13 @@ namespace MathQuiz
                     break;
                 case EQuizType.Division:
                     symbol = "÷";
-                    var num1 = Convert.ToSingle(random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber));
-                    var num2 = Convert.ToSingle(random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber));
+                    var num1 = Convert.ToSingle(random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber));
+                    var num2 = Convert.ToSingle(random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber));
                     var res = num1 / num2;
                     while (res % 1 != 0)
                     {
-                        num1 = Convert.ToSingle(random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber));
-                        num2 = Convert.ToSingle(random.Next(selectedQuiz.MinNumber, selectedQuiz.MaxNumber));
+                        num1 = Convert.ToSingle(random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber));
+                        num2 = Convert.ToSingle(random.Next(selectedQuizModel.MinNumber, selectedQuizModel.MaxNumber));
                         res = num1 / num2;
                     }
                     number1 = Convert.ToInt32(num1);

@@ -33,35 +33,35 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Unturned\Assembly-CSharp.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="RFRocketLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\..\..\Libraries\RiceField\RFRocketLibrary.dll</HintPath>
         </Reference>
         <Reference Include="Rocket.API, Version=4.9.3.4, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Rocket\Rocket.API.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\Rocket.API.dll</HintPath>
         </Reference>
         <Reference Include="Rocket.Core, Version=4.9.3.4, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Rocket\Rocket.Core.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\Rocket.Core.dll</HintPath>
         </Reference>
         <Reference Include="Rocket.Unturned, Version=4.9.3.13, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Rocket\Rocket.Unturned.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\Rocket.Unturned.dll</HintPath>
         </Reference>
         <Reference Include="SDG.NetTransport, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Unturned\SDG.NetTransport.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\SDG.NetTransport.dll</HintPath>
         </Reference>
         <Reference Include="Steamworks.NET, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Unturned\Steamworks.NET.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\Steamworks.NET.dll</HintPath>
         </Reference>
         <Reference Include="System" />
         <Reference Include="System.Core" />
         <Reference Include="System.Data" />
         <Reference Include="System.Xml" />
-        <Reference Include="Uconomy, Version=1.0.4.1, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Plugin\Uconomy.dll</HintPath>
-        </Reference>
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Unturned\UnityEngine.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\Libraries\Unturned\UnityEngine.CoreModule.dll</HintPath>
+          <HintPath>..\..\..\Libraries\RocketMod\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
     </ItemGroup>
     <ItemGroup>

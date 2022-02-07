@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using fr34kyn01535.Uconomy;
 using RFMathQuiz.Models;
+using RFRocketLibrary.Hooks;
 using Rocket.API;
 using Rocket.Core.Logging;
-using Rocket.Core.Plugins;
 using Rocket.Unturned.Chat;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
@@ -39,15 +38,12 @@ namespace RFMathQuiz.Commands
                             Plugin.NoQuestion = true;
                             if (Plugin.Inst.CurrentQuizModel.RewardType == ERewardType.Uconomy)
                             {
-                                RocketPlugin.ExecuteDependencyCode("Uconomy", (IRocketPlugin plugin) =>
-                                {
-                                    var uconomy = (Uconomy)plugin;
-                                    uconomy.Database.IncreaseBalance(player.CSteamID.ToString(), Plugin.Inst.CurrentQuizModel.RewardAmount);
-                                    var rightanswer = Plugin.Inst.Translate("mathquiz_true_answer", Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), uconomy.Configuration.Instance.MoneyName, uconomy.Database.GetBalance(player.CSteamID.ToString()));
-                                    ChatManager.serverSendMessage(rightanswer, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, player.SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
-                                    var winner = Plugin.Inst.Translate("mathquiz_broadcast_winner", caller.DisplayName, Plugin.Result.ToString(), Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), uconomy.Configuration.Instance.MoneyName);
-                                    ChatManager.serverSendMessage(winner, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, null, EChatMode.GLOBAL, Plugin.Conf.AnnouncerImageUrl, true);
-                                });
+                                UconomyHook.Deposit(player.CSteamID.m_SteamID, Plugin.Inst.CurrentQuizModel.RewardAmount);
+                                UconomyHook.AddHistory(player.CSteamID.m_SteamID, Plugin.Inst.CurrentQuizModel.RewardAmount, "Win Math Quiz");
+                                var rightanswer = Plugin.Inst.Translate("mathquiz_true_answer", Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), UconomyHook.MoneyName, UconomyHook.GetBalance(player.CSteamID.m_SteamID));
+                                ChatManager.serverSendMessage(rightanswer, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, player.SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
+                                var winner = Plugin.Inst.Translate("mathquiz_broadcast_winner", caller.DisplayName, Plugin.Result.ToString(), Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), UconomyHook.MoneyName);
+                                ChatManager.serverSendMessage(winner, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, null, EChatMode.GLOBAL, Plugin.Conf.AnnouncerImageUrl, true);
                             }
                             else
                             {

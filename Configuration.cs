@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Xml.Serialization;
+using RFMathQuiz.Enums;
 using RFMathQuiz.Models;
 using Rocket.API;
 
@@ -8,23 +9,23 @@ namespace RFMathQuiz
     public class Configuration : IRocketPluginConfiguration
     {
         public bool Enabled;
-        public string AnnouncerImageUrl, MessageColor, UnfavorableMessageColor;
+        public string MessageIconUrl, MessageColor, UnfavorableMessageColor;
         public float IntervalInSeconds;
-        [XmlArrayItem("Quiz")]
-        public List<QuizModel> Quizzes;
+        public List<Quiz> Quizzes;
         public void LoadDefaults()
         {
             Enabled = true;
-            AnnouncerImageUrl = "https://i.pinimg.com/originals/8e/80/2a/8e802a0b020d2a38f427ac80a70d23b0.png";
-            IntervalInSeconds = 300;
             MessageColor = "yellow";
             UnfavorableMessageColor = "red";
-            Quizzes = new List<QuizModel>
+            // MessageIconUrl = "https://i.pinimg.com/originals/8e/80/2a/8e802a0b020d2a38f427ac80a70d23b0.png";
+            MessageIconUrl = "https://cdn.jsdelivr.net/gh/RiceField-Plugins/UnturnedImages@images/plugin/RFMathQuiz/RFMathQuiz.png";
+            IntervalInSeconds = 30;
+            Quizzes = new List<Quiz>
             {
-                new QuizModel(EQuizType.Addition, 1, 1000, 25, ERewardType.Experience, 100),
-                new QuizModel(EQuizType.Subtraction, 1, 1000, 25, ERewardType.Experience, 100),
-                new QuizModel(EQuizType.Multiplication, 1, 10, 25, ERewardType.Experience, 100),
-                new QuizModel(EQuizType.Division, 1, 10, 25, ERewardType.Experience, 100),
+                new Quiz(EQuiz.ADDITION, 1, 1000, 45, EReward.EXPERIENCE, 100),
+                new Quiz(EQuiz.SUBTRACTION, 1, 1000, 45, EReward.EXPERIENCE, 100),
+                new Quiz(EQuiz.MULTIPLICATION, 1, 10, 25, EReward.EXPERIENCE, 100),
+                new Quiz(EQuiz.DIVISION, 1, 10, 25, EReward.EXPERIENCE, 100),
             };
         }
     }

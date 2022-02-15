@@ -1,11 +1,12 @@
 ﻿using System.Xml.Serialization;
+using RFMathQuiz.Enums;
 
 namespace RFMathQuiz.Models
 {
-    public class QuizModel
+    public class Quiz
     {
         [XmlAttribute("Type")]
-        public EQuizType Type;
+        public EQuiz Type;
         [XmlAttribute("MinNumber")]
         public int MinNumber;
         [XmlAttribute("MaxNumber")]
@@ -13,33 +14,19 @@ namespace RFMathQuiz.Models
         [XmlAttribute("Chance")]
         public byte Chance;
         [XmlAttribute("RewardType")]
-        public ERewardType RewardType;
+        public EReward Reward;
         [XmlAttribute("RewardAmount")]
         public uint RewardAmount;
 
-        public QuizModel(){}
-        public QuizModel(EQuizType type, int minNumber, int maxNumber, byte chance, ERewardType rewardType, uint rewardAmount)
+        public Quiz(){}
+        public Quiz(EQuiz type, int minNumber, int maxNumber, byte chance, EReward reward, uint rewardAmount)
         {
             Type = type;
             MinNumber = minNumber;
             MaxNumber = maxNumber;
             Chance = chance;
-            RewardType = rewardType;
+            Reward = reward;
             RewardAmount = rewardAmount;
         }
-    }
-
-    public enum EQuizType
-    {
-        Addition,
-        Subtraction,
-        Multiplication,
-        Division,
-    }
-
-    public enum ERewardType
-    {
-        Experience,
-        Uconomy,
     }
 }

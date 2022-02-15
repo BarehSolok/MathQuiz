@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using RFMathQuiz.Enums;
+using RFMathQuiz.Managers;
 using RFMathQuiz.Models;
+using RFMathQuiz.Utils;
+using RFRocketLibrary.Helpers;
 using RFRocketLibrary.Hooks;
 using Rocket.API;
 using Rocket.Core.Logging;
@@ -16,18 +20,19 @@ namespace RFMathQuiz.Commands
         public AllowedCaller AllowedCaller => AllowedCaller.Player;
         public string Name => "answer";
         public string Help => "Answer RFMathQuiz";
-        public string Syntax => "/answer <integer>";
-        public List<string> Aliases => new List<string> { "ans", "re" };
-        public List<string> Permissions => new List<string> { "answer" };
+        public string Syntax => "/re <answer>' or '/answer <answer>";
+        public List<string> Aliases => new List<string> {"ans", "re"};
+        public List<string> Permissions => new List<string> {"answer"};
+
         public void Execute(IRocketPlayer caller, string[] command)
         {
             try
             {
-                var player = (UnturnedPlayer)caller;
+                var player = (UnturnedPlayer) caller;
                 if (Plugin.NoQuestion)
                 {
-                    var noQuestion = Plugin.Inst.Translate("mathquiz_no_question");
-                    ChatManager.serverSendMessage(noQuestion, UnturnedChat.GetColorFromName(Plugin.Conf.UnfavorableMessageColor, Color.red), null, ((UnturnedPlayer)caller).SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
+                    var noQuestion = QuizUtil.TranslateRich(EResponse.NO_QUESTION.ToString());
+                    ChatHelper.Broadcast(noQuestion, Plugin.UnfavorMsgColor, Plugin.Conf.MessageIconUrl);
                 }
                 else
                 {
@@ -36,34 +41,33 @@ namespace RFMathQuiz.Commands
                         if (command[0] == Plugin.Result.ToString() && !Plugin.NoQuestion)
                         {
                             Plugin.NoQuestion = true;
-                            if (Plugin.Inst.CurrentQuizModel.RewardType == ERewardType.Uconomy)
-                            {
-                                UconomyHook.Deposit(player.CSteamID.m_SteamID, Plugin.Inst.CurrentQuizModel.RewardAmount);
-                                UconomyHook.AddHistory(player.CSteamID.m_SteamID, Plugin.Inst.CurrentQuizModel.RewardAmount, "Win Math Quiz");
-                                var rightanswer = Plugin.Inst.Translate("mathquiz_true_answer", Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), UconomyHook.MoneyName, UconomyHook.GetBalance(player.CSteamID.m_SteamID));
-                                ChatManager.serverSendMessage(rightanswer, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, player.SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
-                                var winner = Plugin.Inst.Translate("mathquiz_broadcast_winner", caller.DisplayName, Plugin.Result.ToString(), Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), UconomyHook.MoneyName);
-                                ChatManager.serverSendMessage(winner, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, null, EChatMode.GLOBAL, Plugin.Conf.AnnouncerImageUrl, true);
-                            }
-                            else
-                            {
-                                player.Experience += Plugin.Inst.CurrentQuizModel.RewardAmount;
-                                var correctAnswer = Plugin.Inst.Translate("mathquiz_true_answer", Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), "Experience", player.Experience);
-                                ChatManager.serverSendMessage(correctAnswer, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, player.SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
-                                var winner = Plugin.Inst.Translate("mathquiz_broadcast_winner", caller.DisplayName, Plugin.Result.ToString(), Plugin.Inst.CurrentQuizModel.RewardAmount.ToString(), "Experience");
-                                ChatManager.serverSendMessage(winner, UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null, null, EChatMode.GLOBAL, Plugin.Conf.AnnouncerImageUrl, true);
-                            }
+
+                            var currentQuiz = Plugin.CurrentQuiz;
+                            var currentBalance = BalanceManager.Increase(currentQuiz.Reward, player.CSteamID.m_SteamID,
+                                currentQuiz.RewardAmount);
+                            var moneySymbol = BalanceManager.GetMoneySymbol(currentQuiz.Reward);
+                            var rightanswer = QuizUtil.TranslateRich(EResponse.TRUE_ANSWER.ToString(),
+                                currentQuiz.RewardAmount.ToString(), moneySymbol, currentBalance);
+                            ChatHelper.Say(player, rightanswer, Plugin.MsgColor, Plugin.Conf.MessageIconUrl);
+
+                            var winner = QuizUtil.TranslateRich(EResponse.BROADCAST_WINNER.ToString(),
+                                caller.DisplayName,
+                                Plugin.Result.ToString(), currentQuiz.RewardAmount.ToString(), moneySymbol);
+                            ChatHelper.Broadcast(winner, Plugin.MsgColor, Plugin.Conf.MessageIconUrl);
                         }
-                        if (command[0] != Plugin.Result.ToString() && !Plugin.NoQuestion) ChatManager.serverSendMessage(Plugin.Inst.Translate("mathquiz_wrong_answer"), UnturnedChat.GetColorFromName(Plugin.Conf.UnfavorableMessageColor, Color.red), null,
-                            ((UnturnedPlayer)caller).SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
+
+                        if (command[0] != Plugin.Result.ToString() && !Plugin.NoQuestion)
+                            ChatHelper.Say(caller, QuizUtil.TranslateRich(EResponse.WRONG_ANSWER.ToString()),
+                                Plugin.UnfavorMsgColor, Plugin.Conf.MessageIconUrl);
                     }
-                    else ChatManager.serverSendMessage(Plugin.Inst.Translate("mathquiz_invalid_parameter"), UnturnedChat.GetColorFromName(Plugin.Conf.MessageColor, Color.yellow), null,
-                        ((UnturnedPlayer)caller).SteamPlayer(), EChatMode.SAY, Plugin.Conf.AnnouncerImageUrl, true);
+                    else
+                        ChatHelper.Say(caller, QuizUtil.TranslateRich(EResponse.INVALID_PARAMETER.ToString(), Syntax),
+                            Plugin.MsgColor, Plugin.Conf.MessageIconUrl);
                 }
             }
-            catch (Exception err)
+            catch (Exception exception)
             {
-                Logger.LogError("[RFMathQuiz] Error: " + err);
+                Logger.LogError($"[{Plugin.Inst.Name}] [ERROR] Details: " + exception);
             }
         }
     }

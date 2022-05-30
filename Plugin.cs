@@ -21,7 +21,7 @@ namespace RFMathQuiz
     public class Plugin : RocketPlugin<Configuration>
     {
         private static int Major = 1;
-        private static int Minor = 0;
+        private static int Minor = 1;
         private static int Patch = 0;
 
         internal static Plugin Inst;

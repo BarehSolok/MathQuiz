@@ -38,7 +38,7 @@
         <Reference Include="com.rlabrecque.steamworks.net, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
           <HintPath>..\..\..\Libraries\RFRocketMod\com.rlabrecque.steamworks.net.dll</HintPath>
         </Reference>
-        <Reference Include="RFRocketLibrary, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Include="RFRocketLibrary">
           <HintPath>..\..\..\Libraries\RFRocketMod\RFRocketLibrary.dll</HintPath>
         </Reference>
         <Reference Include="Rocket.API, Version=4.9.3.4, Culture=neutral, PublicKeyToken=null">
